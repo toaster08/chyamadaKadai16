@@ -31,13 +31,13 @@ final class ItemListViewController: UIViewController {
     private var editingAtIndexPath: IndexPath?
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let nextVC = (segue.destination as? UINavigationController)?.topViewController as? InputItemViewController {
+        if let inputVC = (segue.destination as? UINavigationController)?.topViewController as? InputItemViewController {
             switch segue.identifier ?? "" {
             case "AddItemSegue":
-                nextVC.mode = .add
+                inputVC.mode = .add
             case "EditItemSegue":
                 guard let editingAtIndexPath = editingAtIndexPath else { return }
-                nextVC.mode = .edit(fruitsList[editingAtIndexPath.row])
+                inputVC.mode = .edit(fruitsList[editingAtIndexPath.row])
             default:
                 break
             }
