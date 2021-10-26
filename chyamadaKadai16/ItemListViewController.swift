@@ -10,6 +10,12 @@ import UIKit
 struct Fruit {
     var name: String
     var isChecked: Bool
+
+    var isValid: Bool {
+        !name
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .isEmpty
+    }
 }
 
 final class ItemListViewController: UIViewController {
@@ -18,7 +24,7 @@ final class ItemListViewController: UIViewController {
                                        Fruit(name: "バナナ", isChecked: false),
                                        Fruit(name: "パイナップル", isChecked: true)
     ]
-    
+
     @IBOutlet private weak var tableView: UITableView! {
         didSet {
             tableView.register(ItemListTableViewCell.nibName,
@@ -27,9 +33,9 @@ final class ItemListViewController: UIViewController {
             tableView.dataSource = self
         }
     }
-    
+
     private var editingAtIndexPath: IndexPath?
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let inputVC = (segue.destination as? UINavigationController)?.topViewController as? InputItemViewController {
             switch segue.identifier ?? "" {
@@ -47,7 +53,7 @@ final class ItemListViewController: UIViewController {
 
 extension ItemListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 40 }
-    
+
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         editingAtIndexPath = indexPath
         performSegue(withIdentifier: "EditItemSegue", sender: nil)
@@ -58,18 +64,18 @@ extension ItemListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         fruitsList.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ItemListTableViewCell.nibID, for: indexPath)
                 as? ItemListTableViewCell else {
             fatalError("The dequeued cell is not instance")
         }
-        
+
         let fruit = fruitsList[indexPath.row]
         cell.configure(fruit: fruit)
         return cell
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         fruitsList[indexPath.row].isChecked.toggle()
         tableView.reloadRows(at: [indexPath], with: .automatic)
@@ -78,24 +84,24 @@ extension ItemListViewController: UITableViewDataSource {
 
 extension ItemListViewController {
     @IBAction private func didTapCancelButton(segue: UIStoryboardSegue) { }
-    
+
     @IBAction private func addItem(segue: UIStoryboardSegue) {
         guard let sourceViewController = segue.source as? InputItemViewController,
               let fruit = sourceViewController.fruit else {
             return
         }
-        
+
         fruitsList.append(Fruit(name: fruit.name, isChecked: false))
         tableView.reloadData()
     }
-    
+
     @IBAction private func editItem(segue: UIStoryboardSegue) {
         guard let sourceViewController = segue.source as? InputItemViewController,
               let fruit = sourceViewController.fruit,
               let editingAtIndexPath = editingAtIndexPath else {
             return
         }
-        
+
         fruitsList[editingAtIndexPath.row] = fruit
         tableView.reloadRows(at: [editingAtIndexPath], with: .automatic)
     }
