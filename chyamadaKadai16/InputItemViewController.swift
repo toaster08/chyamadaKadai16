@@ -10,11 +10,20 @@ import UIKit
 final class InputItemViewController: UIViewController {
     enum Mode {
         case add, edit(Fruit)
+
+        var isChecked: Bool {
+            switch self {
+            case .add:
+                return false
+            case .edit(let fruit):
+                return fruit.isChecked
+            }
+        }
     }
+
     var mode: Mode?
 
-    private(set) var fruit: Fruit?
-    private(set) var isChecked: Bool?
+    private(set) var result: Fruit?
 
     @IBOutlet private weak var itemNameTextField: UITextField!
     @IBOutlet private weak var saveBarButtonItem: UIBarButtonItem!
@@ -36,7 +45,6 @@ final class InputItemViewController: UIViewController {
             itemNameTextField.text = ""
         case let .edit(fruit):
             saveBarButtonItem.isEnabled = true
-            isChecked = fruit.isChecked
             itemNameTextField.text = fruit.name
         }
     }
@@ -53,8 +61,17 @@ final class InputItemViewController: UIViewController {
     }
 
     @objc private func itemNameTextFieldEditingChanged() {
-        let fruit = Fruit(name: itemNameTextField.text ?? "", isChecked: isChecked ?? false)
-        saveBarButtonItem.isEnabled = fruit.isValid
-        self.fruit = fruit
+        guard let mode = mode else {
+            fatalError("mode is nil.")
+        }
+
+        let newFruit = Fruit(
+            name: itemNameTextField.text ?? "",
+            isChecked: mode.isChecked
+        )
+
+        saveBarButtonItem.isEnabled = newFruit != nil
+
+        result = newFruit
     }
 }

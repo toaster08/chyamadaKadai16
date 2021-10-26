@@ -11,10 +11,13 @@ struct Fruit {
     var name: String
     var isChecked: Bool
 
-    var isValid: Bool {
-        !name
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty
+    init?(name: String, isChecked: Bool) {
+        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return nil
+        }
+
+        self.name = name
+        self.isChecked = isChecked
     }
 }
 
@@ -23,7 +26,7 @@ final class ItemListViewController: UIViewController {
                                        Fruit(name: "みかん", isChecked: true),
                                        Fruit(name: "バナナ", isChecked: false),
                                        Fruit(name: "パイナップル", isChecked: true)
-    ]
+    ].compactMap({ $0 })
 
     @IBOutlet private weak var tableView: UITableView! {
         didSet {
@@ -87,17 +90,17 @@ extension ItemListViewController {
 
     @IBAction private func addItem(segue: UIStoryboardSegue) {
         guard let sourceViewController = segue.source as? InputItemViewController,
-              let fruit = sourceViewController.fruit else {
+              let fruit = sourceViewController.result else {
             return
         }
 
-        fruitsList.append(Fruit(name: fruit.name, isChecked: false))
+        fruitsList.append(fruit)
         tableView.reloadData()
     }
 
     @IBAction private func editItem(segue: UIStoryboardSegue) {
         guard let sourceViewController = segue.source as? InputItemViewController,
-              let fruit = sourceViewController.fruit,
+              let fruit = sourceViewController.result,
               let editingAtIndexPath = editingAtIndexPath else {
             return
         }
