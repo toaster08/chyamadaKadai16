@@ -8,7 +8,7 @@
 import UIKit
 
 struct Fruit {
-    var name: String
+    private(set) var name: String
     var isChecked: Bool
 
     init?(name: String, isChecked: Bool) {
