@@ -20,6 +20,12 @@ final class InputItemViewController: UIViewController {
     @IBOutlet private weak var saveBarButtonItem: UIBarButtonItem!
 
     override func viewDidLoad() {
+        super.viewDidLoad()
+
+        guard let mode = mode else {
+            fatalError("mode is nil.")
+        }
+
         saveBarButtonItem.isEnabled = false
         itemNameTextField.addTarget(self,
                                     action: #selector(itemNameTextFieldEditingChanged),
@@ -32,17 +38,17 @@ final class InputItemViewController: UIViewController {
             saveBarButtonItem.isEnabled = true
             isChecked = fruit.isChecked
             itemNameTextField.text = fruit.name
-        default:
-            break
         }
     }
 
     @IBAction private func saveItem(_ sender: Any) {
+        guard let mode = mode else {
+            fatalError("mode is nil.")
+        }
+
         switch mode {
         case .add:  performSegue(withIdentifier: "AddItemSegue", sender: nil)
         case .edit: performSegue(withIdentifier: "EditItemSegue", sender: nil)
-        default:
-            break
         }
     }
 
