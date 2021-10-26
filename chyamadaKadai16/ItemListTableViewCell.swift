@@ -10,10 +10,10 @@ import UIKit
 final class ItemListTableViewCell: UITableViewCell {
     static let nibName = UINib(nibName: "TableViewCell", bundle: nil)
     static let nibID = "Cell"
-    
+
     @IBOutlet private weak var checkImageView: UIImageView!
     @IBOutlet private weak var itemNameLabel: UILabel!
-    
+
     func configure(fruit: Fruit) {
         itemNameLabel.text = fruit.name
         checkImageView.image = fruit.isChecked ? UIImage(systemName: "checkmark") : nil
