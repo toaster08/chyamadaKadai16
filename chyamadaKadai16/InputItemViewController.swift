@@ -77,10 +77,4 @@ final class InputItemViewController: UIViewController {
         saveBarButtonItem.isEnabled = newFruit != nil
         result = newFruit
     }
-
-    private func isValid(itemName: String) -> Bool {
-        !itemName
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty
-    }
 }
